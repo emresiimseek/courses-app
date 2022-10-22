@@ -3,7 +3,9 @@ import Button from '../../common/Button';
 import Input from '../../common/Input';
 import TextArea from '../../common/TextArea';
 import { toHoursAndMinutes } from '../../helpers/getCourceDuration';
+import { filterAuthorList } from '../../helpers/useFilterList';
 import AuthorItem from './AuthorItem';
+import CreateCourseSection from './CreateCourseSection';
 
 function CreateCource(props) {
 	const [selectedAuthors, setSelectedAuthors] = useState([]);
@@ -15,18 +17,41 @@ function CreateCource(props) {
 		title: '',
 		description: '',
 		creationDate: '10/12/2022',
-		duration: null,
+		duration: '',
 		authors: [],
 	});
 
 	useEffect(() => {
 		setCourse({ ...course, authors: selectedAuthors.map((a) => a?.id) });
-	}, [course, selectedAuthors]);
+	}, [selectedAuthors]);
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
 
 		props.onCourseChanged(course);
+	};
+
+	const onAuthorAdd = (autId) => {
+		const { newAuthors, newSelectedAuthors } = filterAuthorList(
+			authors,
+			selectedAuthors,
+			autId,
+			'add'
+		);
+
+		setSelectedAuthors(newSelectedAuthors);
+		setAuthors(newAuthors);
+	};
+
+	const onAuthorRemove = (autId) => {
+		const { newAuthors, newSelectedAuthors } = filterAuthorList(
+			authors,
+			selectedAuthors,
+			autId
+		);
+
+		setAuthors(newAuthors);
+		setSelectedAuthors(newSelectedAuthors);
 	};
 
 	return (
@@ -52,53 +77,41 @@ function CreateCource(props) {
 			/>
 			<div className='border border-gray-400 rounded p-5 my-10'>
 				<div className='flex'>
-					<div className='flex-1'>
-						<div className='flex flex-col gap-5'>
-							<h1 className='text-center text-xl'>Add Auther</h1>
-							<Input
-								labelText='Author Name'
-								value={currentAuthor}
-								placeholderText='Enter author name...'
-								onChange={(value) => setCurrentAuthor(value)}
+					<CreateCourseSection title='Add Auther'>
+						<Input
+							labelText='Author Name'
+							value={props.currentAuthor}
+							placeholderText='Enter author name...'
+							onChange={(value) => setCurrentAuthor(value)}
+						/>
+						<div className='justify-center flex'>
+							<Button
+								text='Create Author'
+								onClick={() => {
+									setAuthors([
+										...authors,
+										{ id: currentAuthor, name: currentAuthor },
+									]);
+									setCurrentAuthor('');
+								}}
 							/>
-							<div className='justify-center flex'>
-								<Button
-									text='Create Author'
-									onClick={() => {
-										setAuthors([
-											...authors,
-											{ id: currentAuthor, name: currentAuthor },
-										]);
-										setCurrentAuthor('');
-									}}
-								/>
-							</div>
 						</div>
-					</div>
-					<div className='flex-1'>
-						<h1 className='text-center text-xl '>Authers</h1>
+					</CreateCourseSection>
+					<CreateCourseSection title='Add Auther'>
 						<div className='flex flex-col gap-2 p-10'>
 							{authors.map((aut) => (
 								<AuthorItem
 									key={aut.id}
 									buttonText='Add author'
 									author={aut}
-									onAuthorChange={(autId) => {
-										setSelectedAuthors([
-											...selectedAuthors,
-											authors.find((aut) => aut.id === autId),
-										]);
-
-										setAuthors(authors.filter((aut) => aut.id !== autId));
-									}}
+									onAuthorChange={onAuthorAdd}
 								/>
 							))}
 						</div>
-					</div>
+					</CreateCourseSection>
 				</div>
 				<div className='flex'>
-					<div className='flex-1'>
-						<h1 className='text-center text-xl my-5'>Duration</h1>
+					<CreateCourseSection title='Add Auther'>
 						<Input
 							value={course.duration}
 							labelText='Duration'
@@ -111,9 +124,8 @@ function CreateCource(props) {
 								{toHoursAndMinutes(course.duration)}
 							</spa>
 						</div>
-					</div>
-					<div className='flex-1'>
-						<h1 className='text-center text-xl my-5'>Courses Authors</h1>
+					</CreateCourseSection>
+					<CreateCourseSection title='Add Auther'>
 						{selectedAuthors.length ? (
 							<div className='flex flex-col gap-2 p-10'>
 								{selectedAuthors.map((aut) => (
@@ -121,22 +133,14 @@ function CreateCource(props) {
 										key={aut.id}
 										author={aut}
 										buttonText='Remove author'
-										onAuthorChange={(autId) => {
-											setAuthors([
-												...authors,
-												props.authors.find((aut) => aut.id === autId),
-											]);
-											setSelectedAuthors(
-												selectedAuthors.filter((aut) => aut.id !== autId)
-											);
-										}}
+										onAuthorChange={onAuthorRemove}
 									/>
 								))}
 							</div>
 						) : (
 							<div className='text-center text-sm'>Author list is empty</div>
 						)}
-					</div>
+					</CreateCourseSection>
 				</div>
 			</div>
 		</form>

@@ -9,6 +9,7 @@ const Courses = (props) => {
 
 	useEffect(() => {
 		if (searchTerm) return;
+
 		setCourses(props.courses);
 	}, [props.courses, searchTerm]);
 
