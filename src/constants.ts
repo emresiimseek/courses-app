@@ -1,4 +1,6 @@
-export const mockedCoursesList = [
+import { Course } from './types/Course';
+
+export const mockedCoursesList: Course[] = [
 	{
 		id: 'de5aaa59-90f5-4dbc-b8a9-aaf205c551ba',
 		title: 'JavaScript',
@@ -50,5 +52,6 @@ export const mockedAuthorsList = [
 
 export const SEARCH_BUTTON_TEXT = 'Search';
 export const SEARCH_INPUT_TEXT = 'Search';
-export const LOGOUT_BUTTON_TEXT = 'Search';
+export const LOGIN_BUTTON_TEXT = 'Login';
+export const LOGOUT_BUTTON_TEXT = 'Logout';
 export const HEADER_USER_TEXT = 'EMRE';

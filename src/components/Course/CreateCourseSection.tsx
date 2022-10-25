@@ -1,6 +1,6 @@
 import React from 'react';
 
-function CreateCourseSection(props) {
+function CreateCourseSection(props: { title: string; children: any }) {
 	return (
 		<div className='flex-1'>
 			<div className='flex flex-col gap-5'>

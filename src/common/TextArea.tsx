@@ -1,6 +1,6 @@
 import React from 'react';
 
-function TextArea(props) {
+function TextArea(props: any) {
 	return (
 		<div>
 			<label

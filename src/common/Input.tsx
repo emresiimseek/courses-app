@@ -1,6 +1,14 @@
 import React from 'react';
 
-function Input(props) {
+function Input(props: {
+	labelText?: string;
+	required?: boolean;
+	type?: string;
+	minLength?: number;
+	value?: string | number;
+	placeholderText?: string;
+	onChange: (value: string) => void;
+}) {
 	return (
 		<div className='w-full'>
 			{props.labelText && (
@@ -14,7 +22,7 @@ function Input(props) {
 			<input
 				required={props.required}
 				minLength={props.minLength}
-				type='text'
+				type={props.type ? props.type : 'text'}
 				value={props.value}
 				className='bg-gray-50 border  border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
 				id={props.labelText}
