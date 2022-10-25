@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from 'react';
 import Button from '../../common/Button';
 import Input from '../../common/Input';
 import TextArea from '../../common/TextArea';
@@ -6,18 +5,22 @@ import { toHoursAndMinutes } from '../../helpers/getCourceDuration';
 import { filterAuthorList } from '../../helpers/useFilterList';
 import AuthorItem from './AuthorItem';
 import CreateCourseSection from './CreateCourseSection';
+import { Author } from '../../types/Author';
+import { mockedAuthorsList } from '../../constants';
+import { useState, useEffect } from 'react';
+import { Course } from '../../types/Course';
 
-function CreateCource(props) {
-	const [selectedAuthors, setSelectedAuthors] = useState([]);
-	const [authors, setAuthors] = useState(props.authors);
-	const [currentAuthor, setCurrentAuthor] = useState();
+function CreateCource(props: { onCourseChanged?: (course: Course) => {} }) {
+	const [selectedAuthors, setSelectedAuthors] = useState<Author[]>([]);
+	const [authors, setAuthors] = useState<Author[]>(mockedAuthorsList);
+	const [currentAuthor, setCurrentAuthor] = useState<string>('');
 
-	const [course, setCourse] = useState({
+	const [course, setCourse] = useState<Course>({
 		id: 'ID',
 		title: '',
 		description: '',
 		creationDate: '10/12/2022',
-		duration: '',
+		duration: 0,
 		authors: [],
 	});
 
@@ -25,13 +28,13 @@ function CreateCource(props) {
 		setCourse({ ...course, authors: selectedAuthors.map((a) => a?.id) });
 	}, [selectedAuthors]);
 
-	const handleSubmit = (event) => {
+	const handleSubmit = (event: any) => {
 		event.preventDefault();
 
-		props.onCourseChanged(course);
+		props.onCourseChanged && props.onCourseChanged(course);
 	};
 
-	const onAuthorAdd = (autId) => {
+	const onAuthorAdd = (autId: string) => {
 		const { newAuthors, newSelectedAuthors } = filterAuthorList(
 			authors,
 			selectedAuthors,
@@ -43,7 +46,7 @@ function CreateCource(props) {
 		setAuthors(newAuthors);
 	};
 
-	const onAuthorRemove = (autId) => {
+	const onAuthorRemove = (autId: string) => {
 		const { newAuthors, newSelectedAuthors } = filterAuthorList(
 			authors,
 			selectedAuthors,
@@ -61,8 +64,9 @@ function CreateCource(props) {
 					<Input
 						required
 						minLength={2}
+						value={course.title}
 						labelText='Title'
-						onChange={(title) => setCourse({ ...course, title })}
+						onChange={(title: string) => setCourse({ ...course, title })}
 						placeholderText='Enter title...'
 					/>
 				</div>
@@ -73,16 +77,18 @@ function CreateCource(props) {
 				required
 				minLength={2}
 				placeholderText='Enter Description'
-				onChange={(description) => setCourse({ ...course, description })}
+				onChange={(description: string) =>
+					setCourse({ ...course, description })
+				}
 			/>
 			<div className='border border-gray-400 rounded p-5 my-10'>
 				<div className='flex'>
 					<CreateCourseSection title='Add Auther'>
 						<Input
 							labelText='Author Name'
-							value={props.currentAuthor}
+							value={currentAuthor}
 							placeholderText='Enter author name...'
-							onChange={(value) => setCurrentAuthor(value)}
+							onChange={(value: string) => setCurrentAuthor(value)}
 						/>
 						<div className='justify-center flex'>
 							<Button
@@ -116,13 +122,15 @@ function CreateCource(props) {
 							value={course.duration}
 							labelText='Duration'
 							placeholderText='Enter duration in minutes...'
-							onChange={(duration) => setCourse({ ...course, duration })}
+							onChange={(duration: string) =>
+								setCourse({ ...course, duration: +duration })
+							}
 						/>
 						<div className='my-5 text-2xl'>
 							<span>Duration:</span>
-							<spa className='font-bold'>
+							<span className='font-bold'>
 								{toHoursAndMinutes(course.duration)}
-							</spa>
+							</span>
 						</div>
 					</CreateCourseSection>
 					<CreateCourseSection title='Add Auther'>
